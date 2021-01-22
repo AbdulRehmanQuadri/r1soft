@@ -145,7 +145,7 @@ case "$OS" in
 	Debian*) echo "OS Detected: $OS";;
 	None*) echo "OS Detected: $OS";;
 esac
-#find_kernel_install_header_devel
+find_kernel_install_header_devel
 r1soft_repo
 install_cdp
 build_module
