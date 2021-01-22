@@ -1,4 +1,5 @@
-
+BS=""            #BS --> Backup Server
+BSI=""           #BSI --> Backup Server IP
 #Finding Distribution
 find_distro()
 {
@@ -40,6 +41,7 @@ r1soft_repo()
 #FindKernelVersion and install appropriate kernel headers and devels
 find_kernel_install_header_devel()
 {
+	GITURL="https://github.com/AbdulRehmanQuadri/r1soft/blob/master/"
 	KERNEL=$(uname -r)
 	echo "Kernel version: "$KERNEL
 	if [ $(uname -r | cut -c 1-3) > 3.10 ];then 
@@ -47,13 +49,30 @@ find_kernel_install_header_devel()
 		exit
 	elif [ $KERNEL -eq "3.10.0-1127.el7.x86_64" ]; then
 		echo "Downloading and installing Kernel Headers..."
+		$(wget $GITURL"3.10.0-1127.el7.x86_64/kernel-headers-3.10.0-1127.el7.x86_64.rpm")
+		`rpm -ivh kernel-headers-3.10.0-1127.el7.x86_64.rpm --force`
+		
 		echo "Downloading and installing Kernel Devels..."
+		$(wget $GITURL"3.10.0-1127.el7.x86_64/kernel-devel-3.10.0-1127.el7.x86_64.rpm")
+		`rpm -ivh kernel-devel-3.10.0-1127.el7.x86_64.rpm`
+
 	elif [ $KERNEL -eq "3.10.0-1160.11.1.el7.x86_64" ]; then
 		echo "Downloading and installing Kernel Headers..."
+		$(wget $GITURL"3.10.0-1160.11.1.el7.x86_64/kernel-headers-3.10.0-1160.11.1.el7.x86_64.rpm")
+		`rpm -ivh kernel-headers-3.10.0-1160.11.1.el7.x86_64.rpm --force`
+
 		echo"Downloading and installing Kernel Devels..."
+		$(wget $GITURL"3.10.0-1160.11.1.el7.x86_64/kernel-devel-3.10.0-1160.11.1.el7.x86_64.rpm")
+		rpm -ivh kernel-devel-3.10.0-1160.11.1.el7.x86_64.rpm
+
 	elif [ $KERNEL -eq "3.10.0-1160.2.2.el7.x86_64" ];then
 		echo "Downloading and installing Kernel Headers..."
+		$(wget $GITURL"3.10.0-1160.2.2.el7.x86_64/kernel-headers-3.10.0-1160.2.2.el7.x86_64.rpm")
+		`rpm -ivh kernel-headers-3.10.0-1160.2.2.el7.x86_64.rpm`
+
 		echo "Downloading and installing Kernel Devels..."
+		$(wget $GITURL"3.10.0-1160.2.2.el7.x86_64/kernel-devel-3.10.0-1160.2.2.el7.x86_64.rpm")
+		rpm -ivh kernel-devel-3.10.0-1160.2.2.el7.x86_64.rpm
 	else
 	       echo "The Kernel Header and Devels of $Kernel yet not configured, Please try to install them manually"	
 	       exit
@@ -76,6 +95,42 @@ install_cdp()
 	fi
 }
 
+build_module()
+{
+	echo "Building R1soft Modules..."
+	$(r1soft-setup --get-module)
+	$(service cdp-agent restart)
+	$(lsmod | grep hcp)	
+	if [ $? -eq 0  ];then
+		echo "Module builded Successfully"
+	else
+		echo "Module build failed"
+	fi
+}
+
+
+add_key_allow_ip()
+{
+	BSI=$(host $BS | awk {'print $4'}) #BSI --> Backup Server IP
+	echo "The IP address of the Backup server is: "$BSI
+	iptables -I INPUT -s $BSI -j ACCEPT
+	iptables-save > /dev/null 2>&1
+	echo "IP of the Backup Server: "$BS" has been ALLOWED in the FIREWALL..." 
+	echo "Adding the key of the Backup server"
+	r1soft-setup --get-key "https://$BS"
+}
+
+backup_server()
+{
+	if [ -z "$1"  ]
+	then
+	        echo "Please provide the Backup server number. E.g: 31,34"
+		exit
+        else
+        BS="r1softbackup"$1".specialservers.com" #BS --> Backup Server
+        echo "Backup Server Provided: "$BS
+	fi
+}
 
 #Main Function
 find_distro
@@ -86,6 +141,9 @@ case "$OS" in
 	Debian*) echo "OS Detected: $OS";;
 	None*) echo "OS Detected: $OS";;
 esac
-r1soft_repo
+backup_server
 #find_kernel_install_header_devel
+r1soft_repo
 install_cdp
+build_module
+add_key_allow_ip
