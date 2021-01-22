@@ -1,16 +1,14 @@
 BS=""            #BS --> Backup Server
 BSI=""           #BSI --> Backup Server IP
-backup_server()
-{
-	if [ -z "$1"  ]
-	then
-	        echo "Please provide the Backup server number. E.g: 31,34"
-		exit
-        else
+
+if [ -z "$1"  ]
+then
+	echo "Please provide the Backup server number. E.g: 31,34"
+	exit
+else
         BS="r1softbackup"$1".specialservers.com" #BS --> Backup Server
         echo "Backup Server Provided: "$BS
-	fi
-}
+fi
 
 #Finding Distribution
 find_distro()
