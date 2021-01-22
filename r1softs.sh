@@ -1,5 +1,17 @@
 BS=""            #BS --> Backup Server
 BSI=""           #BSI --> Backup Server IP
+backup_server()
+{
+	if [ -z "$1"  ]
+	then
+	        echo "Please provide the Backup server number. E.g: 31,34"
+		exit
+        else
+        BS="r1softbackup"$1".specialservers.com" #BS --> Backup Server
+        echo "Backup Server Provided: "$BS
+	fi
+}
+
 #Finding Distribution
 find_distro()
 {
@@ -23,20 +35,6 @@ find_distro()
 		OS="None"
 	fi
 }
-
-#Configure R1Soft Repository
-r1soft_repo()
-{
-	echo "Configuring R1Soft Repository..."
- 	if [ -f '/etc/yum.repos.d/r1soft.repo' ];then
- 		echo -e "[R1Soft]\nname=R1Soft Repostory Server\nbaseurl=http://repo.r1soft.com/yum/stable/\$basearch/\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/r1soft.repo
- 		echo -e "R1Soft Repository Configured"
-	else
-		echo -e "[R1Soft]\nname=R1Soft Repostory Server\nbaseurl=http://repo.r1soft.com/yum/stable/\$basearch/\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/r1soft.repo
-		echo "R1Soft Repository Configured"
-	fi
-}
-
 
 #FindKernelVersion and install appropriate kernel headers and devels
 find_kernel_install_header_devel()
@@ -79,6 +77,20 @@ find_kernel_install_header_devel()
 	fi
 }
 
+#Configure R1Soft Repository
+r1soft_repo()
+{
+	echo "Configuring R1Soft Repository..."
+ 	if [ -f '/etc/yum.repos.d/r1soft.repo' ];then
+ 		echo -e "[R1Soft]\nname=R1Soft Repostory Server\nbaseurl=http://repo.r1soft.com/yum/stable/\$basearch/\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/r1soft.repo
+ 		echo -e "R1Soft Repository Configured"
+	else
+		echo -e "[R1Soft]\nname=R1Soft Repostory Server\nbaseurl=http://repo.r1soft.com/yum/stable/\$basearch/\nenabled=1\ngpgcheck=0" >> /etc/yum.repos.d/r1soft.repo
+		echo "R1Soft Repository Configured"
+	fi
+}
+
+
 install_cdp()
 {
 	$(rpm -q cdp)
@@ -116,23 +128,15 @@ add_key_allow_ip()
 	iptables -I INPUT -s $BSI -j ACCEPT
 	iptables-save > /dev/null 2>&1
 	echo "IP of the Backup Server: "$BS" has been ALLOWED in the FIREWALL..." 
-	echo "Adding the key of the Backup server"
+	echo "Adding the key of the Backup server..."
 	r1soft-setup --get-key "https://$BS"
+	echo "CDP Agent installed successfull, kindly run the command on the Backup server:"$BS" "
+	
 }
 
-backup_server()
-{
-	if [ -z "$1"  ]
-	then
-	        echo "Please provide the Backup server number. E.g: 31,34"
-		exit
-        else
-        BS="r1softbackup"$1".specialservers.com" #BS --> Backup Server
-        echo "Backup Server Provided: "$BS
-	fi
-}
 
 #Main Function
+backup_server
 find_distro
 case "$OS" in 
 	CentOS*) echo "OS Detected: $OS";;
@@ -141,7 +145,6 @@ case "$OS" in
 	Debian*) echo "OS Detected: $OS";;
 	None*) echo "OS Detected: $OS";;
 esac
-backup_server
 #find_kernel_install_header_devel
 r1soft_repo
 install_cdp
