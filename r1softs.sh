@@ -37,7 +37,6 @@ find_distro()
 #FindKernelVersion and install appropriate kernel headers and devels
 find_kernel_install_header_devel()
 {
-	GITURL="https://github.com/AbdulRehmanQuadri/r1soft/blob/master/"
 	KERNEL=$(uname -r)
 	echo "Kernel version: "$KERNEL
 	if [ $(uname -r | cut -c 1-3) > 3.10 ];then 
@@ -45,29 +44,29 @@ find_kernel_install_header_devel()
 		exit
 	elif [ $KERNEL -eq "3.10.0-1127.el7.x86_64" ]; then
 		echo "Downloading and installing Kernel Headers..."
-		$(wget $GITURL"3.10.0-1127.el7.x86_64/kernel-headers-3.10.0-1127.el7.x86_64.rpm")
+		$(wget https://buildlogs.centos.org/c7.2003.00.x86_64/kernel/20200331233310/3.10.0-1127.el7.x86_64/kernel-headers-3.10.0-1127.el7.x86_64.rpm)
 		`rpm -ivh kernel-headers-3.10.0-1127.el7.x86_64.rpm --force`
 		
 		echo "Downloading and installing Kernel Devels..."
-		$(wget $GITURL"3.10.0-1127.el7.x86_64/kernel-devel-3.10.0-1127.el7.x86_64.rpm")
+		$(wget https://buildlogs.centos.org/c7.2003.00.x86_64/kernel/20200331233310/3.10.0-1127.el7.x86_64/kernel-devel-3.10.0-1127.el7.x86_64.rpm)
 		`rpm -ivh kernel-devel-3.10.0-1127.el7.x86_64.rpm`
 
 	elif [ $KERNEL -eq "3.10.0-1160.11.1.el7.x86_64" ]; then
 		echo "Downloading and installing Kernel Headers..."
-		$(wget $GITURL"3.10.0-1160.11.1.el7.x86_64/kernel-headers-3.10.0-1160.11.1.el7.x86_64.rpm")
+		$(wget http://mirror.centos.org/centos/7/updates/x86_64/Packages/kernel-headers-3.10.0-1160.11.1.el7.x86_64.rpm)
 		`rpm -ivh kernel-headers-3.10.0-1160.11.1.el7.x86_64.rpm --force`
 
 		echo"Downloading and installing Kernel Devels..."
-		$(wget $GITURL"3.10.0-1160.11.1.el7.x86_64/kernel-devel-3.10.0-1160.11.1.el7.x86_64.rpm")
+		$(wget http://mirror.centos.org/centos/7/updates/x86_64/Packages/kernel-devel-3.10.0-1160.11.1.el7.x86_64.rpm)
 		rpm -ivh kernel-devel-3.10.0-1160.11.1.el7.x86_64.rpm
 
 	elif [ $KERNEL -eq "3.10.0-1160.2.2.el7.x86_64" ];then
 		echo "Downloading and installing Kernel Headers..."
-		$(wget $GITURL"3.10.0-1160.2.2.el7.x86_64/kernel-headers-3.10.0-1160.2.2.el7.x86_64.rpm")
+		$(wget http://mirror.centos.org/centos/7/updates/x86_64/Packages/kernel-headers-3.10.0-1160.2.2.el7.x86_64.rpm)
 		`rpm -ivh kernel-headers-3.10.0-1160.2.2.el7.x86_64.rpm`
 
 		echo "Downloading and installing Kernel Devels..."
-		$(wget $GITURL"3.10.0-1160.2.2.el7.x86_64/kernel-devel-3.10.0-1160.2.2.el7.x86_64.rpm")
+		$(wget http://mirror.centos.org/centos/7/updates/x86_64/Packages/kernel-devel-3.10.0-1160.2.2.el7.x86_64.rpm)
 		rpm -ivh kernel-devel-3.10.0-1160.2.2.el7.x86_64.rpm
 	else
 	       echo "The Kernel Header and Devels of $Kernel yet not configured, Please try to install them manually"	
