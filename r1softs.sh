@@ -1,3 +1,7 @@
+#!/bin/bash
+#Script By Abdul Rehman[abdul.rehman@esds.co.in]
+#Open for update and Suggestions
+
 BS=""            #BS --> Backup Server
 BSI=""           #BSI --> Backup Server IP
 
