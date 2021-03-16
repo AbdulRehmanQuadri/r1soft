@@ -130,7 +130,7 @@ add_key_allow_ip()
 	echo "IP of the Backup Server: "$BS" has been ALLOWED in the FIREWALL..." 
 	echo "Adding the key of the Backup server..."
 	r1soft-setup --get-key "https://$BS"
-	echo "CDP Agent installed successfull, kindly run the command on the Backup server:"$BS" "
+	echo "CDP Agent installed successfull, kindly allow the IP of this server on the Backup server:"$BS" "
 	
 }
 
