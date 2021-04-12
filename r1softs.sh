@@ -98,7 +98,7 @@ install_cdp()
 		echo "CDP Agent is already installed"
 	else
 		echo "Installing CDP Agent, Please be patient..."
-		`r1soft-cdp-enterprise-agent -y`
+		`yum install r1soft-cdp-enterprise-agent -y`
 		if [ $? -eq 0 ];then
 			echo "CDP Agent Installed Successfully"
 		else
