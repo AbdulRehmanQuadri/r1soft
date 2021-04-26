@@ -104,12 +104,12 @@ r1soft_repo()
 install_cdp()
 {
         $(rpm -q cdp)
-        if [ $? -eq 0  ]; then
+        if [ $(echo $?) -eq 0  ]; then
                 echo "CDP Agent is already installed"
         else
                 echo "Installing CDP Agent, Please be patient..."
                 `yum install r1soft-cdp-enterprise-agent -y`
-                if [ $? -eq 0 ];then
+                if [ $(echo $?) -eq 0 ];then
                         echo "CDP Agent Installed Successfully"
                 else
                         echo "Error Occured!!!, Please try to install CDP Agent manually"
@@ -123,7 +123,7 @@ build_module()
         $(r1soft-setup --get-module)
         $(service cdp-agent restart)
         $(lsmod | grep hcp)
-        if [ $? -eq 0  ];then
+        if [ $(echo $?) 0  ];then
                 echo "Module builded Successfully"
         else
                 echo "Module build failed"
