@@ -46,6 +46,15 @@ find_kernel_install_header_devel()
         if [ $(uname -r | cut -c 1-4) != 3.10 ];then
                 echo "R1Soft does not support kernel version > 3.10, Kindly downgrade the kernel and give a try"
                 exit
+        elif [ $KERNEL == "3.10.0-957.5.1.el7.x86_64" ]; then
+                echo "Downloading and installing Kernel Headers..."
+                $(wget https://buildlogs.centos.org/c7.1810.u.x86_64/kernel/20190201145240/3.10.0-957.5.1.el7.x86_64/kernel-headers-3.10.0-957.5.1.el7.x86_64.rpm)
+                `rpm -ivh kernel-headers-3.10.0-957.5.1.el7.x86_64.rpm --force`
+
+                echo "Downloading and installing Kernel Devels..."
+                $(wget https://buildlogs.centos.org/c7.1810.u.x86_64/kernel/20190201145240/3.10.0-957.5.1.el7.x86_64/kernel-devel-3.10.0-957.5.1.el7.x86_64.rpm)
+                `rpm -ivh kernel-devel-3.10.0-957.5.1.el7.x86_64.rpm`
+                
         elif [ $KERNEL == "3.10.0-1127.el7.x86_64" ]; then
                 echo "Downloading and installing Kernel Headers..."
                 $(wget https://buildlogs.centos.org/c7.2003.00.x86_64/kernel/20200331233310/3.10.0-1127.el7.x86_64/kernel-headers-3.10.0-1127.el7.x86_64.rpm)
